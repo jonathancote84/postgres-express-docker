@@ -1,0 +1,31 @@
+# docker-compose.yml
+version: '3'
+services:
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3001:3001'
+    restart: on-failure
+    container_name: api
+    volumes:
+      - /app/node_modules # Inside the container, don't try to override this folder, just leave as is
+      - ./server:/app # Look at the server directory and copy everything into the app folder in the container
+# todo : getting the database to connect with the the api as a basic restful endpoint
+  database:
+    image: "postgres" # use latest official postgres version
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
+volumes:
+  database-data: # named volumes can be managed easier using docker-compose
+
+
+    # environment:
+    #   - PGUSER=postgres
+    #   - PGHOST=postgres
+    #   - PGDATABASE=postgres
+    #   - PGPASSWORD=password
+    #   - PGPORT=5432
